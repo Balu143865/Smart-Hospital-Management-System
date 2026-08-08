@@ -795,8 +795,6 @@ Return ONLY valid JSON without markdown wrapping.`
   });
 }
 
-if (process.env.VERCEL !== '1') {
-  startServer();
-}
+startServer();
 
 export default app;

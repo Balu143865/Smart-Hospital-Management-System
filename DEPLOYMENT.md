@@ -1,25 +1,36 @@
-# Deploying to Vercel
+# Deploying to Render.com
 
-This application is fully configured for deployment on **Vercel** with both frontend (React + Vite) and backend (Express serverless API endpoints).
+This application is configured for deployment on **Render.com** as a Node.js Web Service running both the React frontend and Express backend.
 
-## Deployment Steps
+---
 
-1. **Push your code to GitHub / GitLab / Bitbucket**:
-   - Export or push this repository to your GitHub account.
+## Quick Steps to Deploy on Render
 
-2. **Import into Vercel**:
-   - Go to [Vercel Dashboard](https://vercel.com/dashboard) and click **Add New > Project**.
-   - Select your repository.
+1. **Push your code to GitHub / GitLab**:
+   - Push your project repository to GitHub or GitLab.
 
-3. **Project Configuration**:
-   - **Framework Preset**: Vite
-   - **Root Directory**: `./`
+2. **Create a New Web Service on Render**:
+   - Log into [Render Dashboard](https://dashboard.render.com/).
+   - Click **New +** and select **Web Service**.
+   - Connect your GitHub / GitLab repository.
+
+3. **Configure the Service Settings**:
+   - **Name**: `enterprise-hospital-system` (or your preferred name)
+   - **Language**: `Node`
+   - **Branch**: `main`
    - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
+   - **Start Command**: `npm start`
 
-4. **Environment Variables**:
-   Add the following environment variable in Vercel Project Settings under **Environment Variables**:
-   - `GEMINI_API_KEY`: *(Optional)* Your Google Gemini API key for AI symptom triage.
+4. **Add Environment Variables**:
+   Under **Environment Variables**, add:
+   - `NODE_ENV`: `production`
+   - `GEMINI_API_KEY`: *(Optional)* Your Google Gemini API Key for AI clinical assistant features.
 
 5. **Deploy**:
-   - Click **Deploy**. Vercel will build the frontend assets and automatically create Serverless Functions for all `/api/*` routes.
+   - Click **Create Web Service**. Render will automatically build the React assets and run the Express server on its assigned port.
+
+---
+
+## Removed Vercel Configuration
+- Deleted `vercel.json` and `/api/index.ts`.
+- The application now uses standard Node.js server execution (`npm start`) suitable for Render, Railway, Cloud Run, or Heroku.
