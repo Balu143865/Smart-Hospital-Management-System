@@ -10,8 +10,8 @@ import {
   INITIAL_INVOICES, INITIAL_NOTIFICATIONS, INITIAL_EMAIL_LOGS, INITIAL_AUDIT_LOGS
 } from './src/data/mockData.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const currentFilename = typeof __filename !== 'undefined' ? __filename : (import.meta && import.meta.url ? fileURLToPath(import.meta.url) : '');
+const currentDirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(currentFilename);
 
 // Initialize In-Memory Data Store
 let users = [...INITIAL_USERS];
