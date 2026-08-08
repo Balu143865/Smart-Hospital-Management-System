@@ -1,6 +1,8 @@
 {
   "name": "Smart Hospital Management System",
   "description": "Enterprise MERN stack Smart Hospital Management System featuring role-based dashboards, appointment scheduling, EHR medical records, pharmacy, laboratory, billing with payment gateway, real-time alerts, and AI diagnostics.",
-  "requestFramePermissions": [],
+  "requestFramePermissions": [
+    "camera"
+  ],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

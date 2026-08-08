@@ -7,30 +7,24 @@ This application is configured for deployment on **Render.com** as a Node.js Web
 ## Quick Steps to Deploy on Render
 
 1. **Push your code to GitHub / GitLab**:
-   - Push your project repository to GitHub or GitLab.
+   - Commit and push these updated changes (`package.json`, `render.yaml`) to your GitHub repository.
 
 2. **Create a New Web Service on Render**:
    - Log into [Render Dashboard](https://dashboard.render.com/).
    - Click **New +** and select **Web Service**.
-   - Connect your GitHub / GitLab repository.
+   - Connect your GitHub repository (`Balu143865/Smart-Hospital-Management-System`).
 
-3. **Configure the Service Settings**:
-   - **Name**: `enterprise-hospital-system` (or your preferred name)
+3. **Configure Service Settings**:
+   - **Name**: `enterprise-hospital-system`
    - **Language**: `Node`
    - **Branch**: `main`
-   - **Build Command**: `npm run build`
+   - **Build Command**: `npm install && npm run build`
    - **Start Command**: `npm start`
 
-4. **Add Environment Variables**:
-   Under **Environment Variables**, add:
+4. **Environment Variables**:
+   Add the following environment variable under **Environment Variables**:
    - `NODE_ENV`: `production`
-   - `GEMINI_API_KEY`: *(Optional)* Your Google Gemini API Key for AI clinical assistant features.
+   - `GEMINI_API_KEY`: *(Optional)* Your Google Gemini API Key for AI features.
 
 5. **Deploy**:
-   - Click **Create Web Service**. Render will automatically build the React assets and run the Express server on its assigned port.
-
----
-
-## Removed Vercel Configuration
-- Deleted `vercel.json` and `/api/index.ts`.
-- The application now uses standard Node.js server execution (`npm start`) suitable for Render, Railway, Cloud Run, or Heroku.
+   - Click **Create Web Service**. All build tools (`vite`, `esbuild`) are included in `dependencies` so `npm install && npm run build` will succeed cleanly.
