@@ -2,6 +2,8 @@
 
 This application is configured for deployment on **Render.com** as a Node.js Web Service running both the React frontend and Express backend.
 
+- **Live Render Application**: [https://smart-hospital-management-system-svbi.onrender.com/](https://smart-hospital-management-system-svbi.onrender.com/)
+
 ---
 
 ## Quick Steps to Deploy on Render
