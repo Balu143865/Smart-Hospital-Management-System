@@ -65,7 +65,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpe
     { id: 'doctors' as ActiveTab, label: 'Doctors Directory', icon: UserCheck, count: docs.length, roles: ['Super Admin', 'Hospital Admin', 'Doctor', 'Receptionist', 'Patient'] },
     { id: 'patients' as ActiveTab, label: 'Patient Directory & EHR', icon: Users, count: pats.length, roles: ['Super Admin', 'Hospital Admin', 'Doctor', 'Receptionist', 'Patient'] },
     { id: 'appointments' as ActiveTab, label: 'Appointments Queue', icon: Calendar, badge: pendingAppointments ? `${pendingAppointments} new` : undefined, roles: ['Super Admin', 'Hospital Admin', 'Doctor', 'Receptionist', 'Patient'] },
-    { id: 'departments' as ActiveTab, label: 'Departments & Beds', icon: Building2, roles: ['Super Admin', 'Hospital Admin', 'Doctor', 'Receptionist'] },
+    { id: 'departments' as ActiveTab, label: 'Inpatient & Bed Management', icon: Building2, roles: ['Super Admin', 'Hospital Admin', 'Doctor', 'Receptionist'] },
     { id: 'pharmacy' as ActiveTab, label: 'Pharmacy & Inventory', icon: Pill, badge: lowStockMeds ? `${lowStockMeds} low` : undefined, roles: ['Super Admin', 'Hospital Admin', 'Doctor', 'Receptionist', 'Patient'] },
     { id: 'laboratory' as ActiveTab, label: 'Laboratory & Orders', icon: TestTube2, count: labOrders.length, roles: ['Super Admin', 'Hospital Admin', 'Doctor', 'Receptionist', 'Patient'] },
     { id: 'medical-records' as ActiveTab, label: 'Medical Records (EHR)', icon: FileText, roles: ['Super Admin', 'Hospital Admin', 'Doctor', 'Receptionist', 'Patient'] },

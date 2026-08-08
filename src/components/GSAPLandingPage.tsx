@@ -2489,29 +2489,26 @@ export const GSAPLandingPage: React.FC<GSAPLandingPageProps> = ({ onGoToTab, onO
 
       {/* Persistent Floating Live Chat Widget */}
       {!liveChatOpen ? (
-        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2">
-          {/* Unread Welcome Tooltip */}
-          {unreadChatBadge && (
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-cyan-500/40 text-white text-xs font-semibold shadow-xl animate-bounce">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span>Live Helpdesk Online</span>
-            </div>
-          )}
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-3">
+          {/* Label Tooltip */}
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-cyan-500/40 text-white text-xs font-extrabold shadow-xl">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+            <span>Live Desk</span>
+          </div>
 
           <button
             onClick={handleOpenLiveChat}
-            className="relative px-3.5 py-3 sm:px-4 sm:py-3.5 rounded-full bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 text-white font-bold text-xs shadow-2xl shadow-cyan-600/40 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2 border border-cyan-400/30 group"
-            title="Open Live Chat Helpdesk"
+            className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 text-white shadow-2xl shadow-cyan-600/50 hover:scale-110 active:scale-95 transition-all cursor-pointer flex items-center justify-center border-2 border-cyan-400/40 group shrink-0"
+            title="Open Live Chat Helpdesk (Live Desk)"
           >
-            <div className="relative">
-              <GoogleAssistantIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <div className="relative flex items-center justify-center">
+              <GoogleAssistantIcon className="w-7 h-7 sm:w-8 sm:h-8 group-hover:scale-110 transition-transform" />
               {unreadChatBadge && (
-                <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-red-500 border-2 border-slate-900 text-[9px] font-extrabold text-white rounded-full flex items-center justify-center animate-pulse">
+                <span className="absolute -top-2 -right-2 w-4.5 h-4.5 p-1 bg-red-500 border-2 border-slate-900 text-[10px] font-black text-white rounded-full flex items-center justify-center animate-pulse shadow-md">
                   1
                 </span>
               )}
             </div>
-            <span className="font-black tracking-wide text-xs">Live Desk</span>
           </button>
         </div>
       ) : createPortal(

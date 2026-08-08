@@ -37,6 +37,7 @@ interface HospitalContextType {
   updateAppointmentStatus: (id: string, status: any) => Promise<void>;
   addDoctor: (data: Partial<Doctor>) => Promise<void>;
   addPatient: (data: Partial<Patient>) => Promise<void>;
+  updatePatient?: (id: string, data: Partial<Patient>) => Promise<void>;
   addMedicalRecord: (data: Partial<MedicalRecord>) => Promise<void>;
   addPrescription: (data: Partial<Prescription>) => Promise<void>;
   addPharmacyItem: (data: Partial<PharmacyItem>) => Promise<void>;
@@ -48,7 +49,7 @@ interface HospitalContextType {
   addInventoryItem: (data: Partial<InventoryItem>) => Promise<void>;
   updateInventoryCondition?: (id: string, condition: string) => Promise<void>;
   updateBedOccupancy?: (deptId: string, occupiedBeds: number) => Promise<void>;
-  analyzeSymptoms?: (symptoms: string, age?: number, gender?: string) => Promise<any>;
+  analyzeSymptoms?: (symptoms: string, age?: number, gender?: string, medicalHistory?: string) => Promise<any>;
   createInvoice: (data: Partial<Invoice>) => Promise<void>;
   payInvoice: (invoiceId: string, method: string, paymentId?: string) => Promise<boolean>;
   triggerEmergencyAlert: (title: string, message: string) => Promise<void>;
@@ -212,6 +213,15 @@ export const HospitalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     await refreshData();
   };
 
+  const updatePatient = async (id: string, data: Partial<Patient>) => {
+    await fetch(`/api/patients/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    await refreshData();
+  };
+
   const addMedicalRecord = async (data: Partial<MedicalRecord>) => {
     await fetch('/api/medical-records', {
       method: 'POST',
@@ -293,12 +303,12 @@ export const HospitalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     await refreshData();
   };
 
-  const analyzeSymptoms = async (symptoms: string, age?: number, gender?: string) => {
+  const analyzeSymptoms = async (symptoms: string, age?: number, gender?: string, medicalHistory?: string) => {
     try {
       const data = await safeFetchJson('/api/ai/symptom-check', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ symptoms, patientAge: age, gender })
+        body: JSON.stringify({ symptoms, patientAge: age, gender, medicalHistory })
       });
       if (!data) return null;
       return data.triage || data;
@@ -389,7 +399,7 @@ export const HospitalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       analytics,
       loading,
       searchQuery, setSearchQuery, selectedDeptFilter, setSelectedDeptFilter,
-      bookAppointment, updateAppointmentStatus, addDoctor, addPatient,
+      bookAppointment, updateAppointmentStatus, addDoctor, addPatient, updatePatient,
       addMedicalRecord, addPrescription, addPharmacyItem, updatePharmacyStock, reorderStock,
       placeLabOrder, orderLabTest, updateLabOrderStatus, addInventoryItem, updateInventoryCondition,
       updateBedOccupancy, analyzeSymptoms, createInvoice,

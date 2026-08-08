@@ -563,6 +563,42 @@ export const INITIAL_LAB_ORDERS: LabOrder[] = [
     orderDate: '2026-08-04 10:00 AM',
     status: 'Testing',
     technicianNotes: 'Patient prepared in MRI Suite 2. Contrast dye administered.',
+  },
+  {
+    id: 'lorder-303',
+    patientId: 'pat-2',
+    patientName: 'Alexander Wright',
+    doctorId: 'doc-1',
+    doctorName: 'Dr. Robert Chen',
+    testId: 'labt-5',
+    testName: 'High-Sensitivity Cardiac Troponin I (hs-cTnI)',
+    orderDate: '2026-08-07 08:15 AM',
+    status: 'Completed',
+    resultSummary: 'CRITICAL: Cardiac Troponin I elevated at 2.85 ng/mL. Immediate cardiology consult & ECG advised.',
+    resultValues: [
+      { parameter: 'Cardiac Troponin I', value: '2.85 ng/mL', normalRange: '< 0.04 ng/mL', flag: 'Critical' },
+      { parameter: 'Creatine Kinase-MB (CK-MB)', value: '18.4 ng/mL', normalRange: '0.5 - 5.0 ng/mL', flag: 'High' },
+      { parameter: 'Myoglobin', value: '142 ng/mL', normalRange: '25 - 72 ng/mL', flag: 'High' }
+    ],
+    technicianNotes: 'STAT result telephoned to attending physician Dr. Robert Chen at 08:30 AM.',
+  },
+  {
+    id: 'lorder-304',
+    patientId: 'pat-4',
+    patientName: 'Michael Chang',
+    doctorId: 'doc-3',
+    doctorName: 'Dr. Marcus Vance',
+    testId: 'labt-2',
+    testName: 'Comprehensive Metabolic Panel (CMP)',
+    orderDate: '2026-08-07 07:45 AM',
+    status: 'Completed',
+    resultSummary: 'ABNORMAL: Serum Potassium elevated at 6.2 mEq/L (Hyperkalemia). Blood Urea Nitrogen 38 mg/dL.',
+    resultValues: [
+      { parameter: 'Potassium (K+)', value: '6.2 mEq/L', normalRange: '3.5 - 5.0 mEq/L', flag: 'High' },
+      { parameter: 'Blood Urea Nitrogen (BUN)', value: '38 mg/dL', normalRange: '7 - 20 mg/dL', flag: 'High' },
+      { parameter: 'Serum Creatinine', value: '2.4 mg/dL', normalRange: '0.7 - 1.3 mg/dL', flag: 'High' }
+    ],
+    technicianNotes: 'Repeat sample verified on Roche Cobas 8000 analyzer.',
   }
 ];
 

@@ -37,11 +37,11 @@ function getGeminiAI() {
   return new GoogleGenAI({ apiKey });
 }
 
-async function startServer() {
-  const app = express();
-  const PORT = 3000;
+export const app = express();
+app.use(express.json({ limit: '10mb' }));
 
-  app.use(express.json({ limit: '10mb' }));
+async function startServer() {
+  const PORT = Number(process.env.PORT) || 3000;
 
   // Helper log audit
   const logAudit = (userName: string, userRole: any, action: string, details: string) => {
@@ -705,16 +705,17 @@ async function startServer() {
 
   // 15. AI SYMPTOM CHECKER & TRIAGE ASSISTANT (Server-side Gemini Integration)
   app.post('/api/ai/symptom-check', async (req, res) => {
-    const { symptoms, age, gender, medicalHistory } = req.body;
+    const { symptoms, age, patientAge, gender, medicalHistory } = req.body;
+    const effectiveAge = age || patientAge || 30;
 
     const ai = getGeminiAI();
     if (ai) {
       try {
         const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
+          model: 'gemini-3.6-flash',
           contents: `You are an expert Clinical Triage AI assistant in a Smart Hospital Management System.
 Analyze the following patient parameters:
-- Patient Age: ${age || 30}
+- Patient Age: ${effectiveAge}
 - Gender: ${gender || 'Unspecified'}
 - Reported Symptoms: "${symptoms}"
 - Past Medical History: "${medicalHistory || 'None reported'}"
@@ -733,7 +734,7 @@ Return ONLY valid JSON without markdown wrapping.`
         const text = response.text || '';
         const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
         const parsed = JSON.parse(cleanJson);
-        return res.json({ success: true, triage: parsed, source: 'Gemini 2.5 Flash API' });
+        return res.json({ success: true, triage: parsed, source: 'Gemini 3.6 Flash API' });
       } catch (err: any) {
         console.error('Gemini API Error:', err);
       }
@@ -794,4 +795,8 @@ Return ONLY valid JSON without markdown wrapping.`
   });
 }
 
-startServer();
+if (process.env.VERCEL !== '1') {
+  startServer();
+}
+
+export default app;
