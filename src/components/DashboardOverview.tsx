@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import jsPDF from 'jspdf';
 import { useAuth } from '../context/AuthContext';
 import { useHospital } from '../context/HospitalContext';
+import { PatientVitalsChart } from './PatientVitalsChart';
+import { HospitalFloorMap } from './HospitalFloorMap';
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, BarChart, Bar, CartesianGrid,
   LineChart, Line, Legend
@@ -23,35 +25,6 @@ export const DashboardOverview: React.FC<{ onGoToTab: (t: any) => void }> = ({ o
   const [acknowledgedAlerts, setAcknowledgedAlerts] = useState<string[]>([]);
   const [simulating, setSimulating] = useState(false);
   const [exportingPdf, setExportingPdf] = useState(false);
-  const [selectedVitalPatientId, setSelectedVitalPatientId] = useState<string>('');
-
-  const selectedPatientForVitals = patients.find(p => p.id === selectedVitalPatientId) || patients[0];
-
-  // 24-Hour Historical Vitals Telemetry Data
-  const get24hVitalsData = (patientName?: string) => {
-    // Generate slight variation based on patient
-    const isCritical = patientName?.toLowerCase().includes('sophia') || patientName?.toLowerCase().includes('alex');
-    const baseHR = isCritical ? 88 : 72;
-    const baseSys = isCritical ? 138 : 120;
-    const baseDia = isCritical ? 88 : 80;
-
-    return [
-      { time: '00:00', heartRate: baseHR - 2, systolicBP: baseSys - 4, diastolicBP: baseDia - 2, spO2: 98 },
-      { time: '02:00', heartRate: baseHR - 5, systolicBP: baseSys - 6, diastolicBP: baseDia - 4, spO2: 99 },
-      { time: '04:00', heartRate: baseHR - 7, systolicBP: baseSys - 8, diastolicBP: baseDia - 5, spO2: 98 },
-      { time: '06:00', heartRate: baseHR - 1, systolicBP: baseSys, diastolicBP: baseDia, spO2: 97 },
-      { time: '08:00', heartRate: baseHR + 8, systolicBP: baseSys + 10, diastolicBP: baseDia + 6, spO2: 98 },
-      { time: '10:00', heartRate: baseHR + 14, systolicBP: baseSys + 14, diastolicBP: baseDia + 8, spO2: 96 },
-      { time: '12:00', heartRate: baseHR + 10, systolicBP: baseSys + 8, diastolicBP: baseDia + 4, spO2: 98 },
-      { time: '14:00', heartRate: baseHR + 4, systolicBP: baseSys + 2, diastolicBP: baseDia + 1, spO2: 99 },
-      { time: '16:00', heartRate: baseHR + 6, systolicBP: baseSys + 5, diastolicBP: baseDia + 3, spO2: 98 },
-      { time: '18:00', heartRate: baseHR + 2, systolicBP: baseSys + 1, diastolicBP: baseDia, spO2: 98 },
-      { time: '20:00', heartRate: baseHR - 1, systolicBP: baseSys - 2, diastolicBP: baseDia - 1, spO2: 99 },
-      { time: '22:00', heartRate: baseHR - 3, systolicBP: baseSys - 3, diastolicBP: baseDia - 2, spO2: 98 },
-    ];
-  };
-
-  const vitalsData = get24hVitalsData(selectedPatientForVitals?.name);
 
   // Hospital Consultation Peak Traffic Heatmap State
   const [selectedHeatmapDept, setSelectedHeatmapDept] = useState<string>('All Departments');
@@ -625,106 +598,14 @@ export const DashboardOverview: React.FC<{ onGoToTab: (t: any) => void }> = ({ o
 
       </div>
 
-      {/* Patient 24-Hour Historical Vitals Line Chart Card */}
-      <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-100 dark:border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold">
-              <Heart className="w-5 h-5 animate-pulse text-rose-500" />
-            </div>
-            <div>
-              <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
-                <span>Patient Vitals Telemetry (24-Hour Trend)</span>
-                <span className="px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">
-                  LIVE SENSOR STREAM
-                </span>
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Continuous monitoring of Heart Rate (BPM), Blood Pressure (Systolic/Diastolic), and Oxygen Saturation (SpO2)
-              </p>
-            </div>
-          </div>
+      {/* Patient Real-Time Vitals Telemetry Chart Component */}
+      <PatientVitalsChart
+        patients={patients}
+        onTriggerEmergencyAlert={triggerEmergencyAlert}
+      />
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-slate-500 shrink-0">Select Patient:</span>
-            <select
-              value={selectedVitalPatientId}
-              onChange={(e) => setSelectedVitalPatientId(e.target.value)}
-              className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            >
-              {patients.map(p => (
-                <option key={p.id} value={p.id}>
-                  {p.name} ({p.admittedStatus || 'Outpatient'})
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Current Vital Stat Pills Summary */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
-            <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
-              <Heart className="w-3 h-3 text-rose-500" /> Heart Rate
-            </span>
-            <p className="text-lg font-black text-rose-600 dark:text-rose-400">
-              {vitalsData[vitalsData.length - 1].heartRate} <span className="text-xs font-normal text-slate-500">bpm</span>
-            </p>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
-            <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
-              <Activity className="w-3 h-3 text-cyan-500" /> Systolic BP
-            </span>
-            <p className="text-lg font-black text-cyan-600 dark:text-cyan-400">
-              {vitalsData[vitalsData.length - 1].systolicBP} <span className="text-xs font-normal text-slate-500">mmHg</span>
-            </p>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
-            <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
-              <Stethoscope className="w-3 h-3 text-indigo-500" /> Diastolic BP
-            </span>
-            <p className="text-lg font-black text-indigo-600 dark:text-indigo-400">
-              {vitalsData[vitalsData.length - 1].diastolicBP} <span className="text-xs font-normal text-slate-500">mmHg</span>
-            </p>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
-            <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
-              <Thermometer className="w-3 h-3 text-emerald-500" /> Oxygen (SpO2)
-            </span>
-            <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">
-              {vitalsData[vitalsData.length - 1].spO2} <span className="text-xs font-normal text-slate-500">%</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Recharts Line Chart for Vitals */}
-        <div className="h-72 w-full pt-2">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={vitalsData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.2} />
-              <XAxis dataKey="time" stroke="#94a3b8" fontSize={11} tickLine={false} />
-              <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} domain={['auto', 'auto']} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#0f172a',
-                  borderColor: '#334155',
-                  borderRadius: '12px',
-                  color: '#fff',
-                  fontSize: '12px'
-                }}
-              />
-              <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-              <Line type="monotone" dataKey="heartRate" name="Heart Rate (bpm)" stroke="#f43f5e" strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 6 }} />
-              <Line type="monotone" dataKey="systolicBP" name="Systolic BP (mmHg)" stroke="#06b6d4" strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 6 }} />
-              <Line type="monotone" dataKey="diastolicBP" name="Diastolic BP (mmHg)" stroke="#818cf8" strokeWidth={2} strokeDasharray="4 4" dot={{ r: 2 }} />
-              <Line type="monotone" dataKey="spO2" name="SpO2 (%)" stroke="#10b981" strokeWidth={2} dot={{ r: 2 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      {/* Interactive Hospital Floor & Bed Telemetry Map */}
+      <HospitalFloorMap />
 
       {/* Hospital Consultation Peak Traffic Heatmap */}
       <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">

@@ -4,9 +4,11 @@ import { useHospital } from '../context/HospitalContext';
 import { useAuth } from '../context/AuthContext';
 import {
   Calendar as CalendarIcon, Clock, Plus, Filter, Search, User, CheckCircle2,
-  XCircle, AlertTriangle, FileText, DollarSign, CreditCard, ChevronRight, X, FileDown
+  XCircle, AlertTriangle, FileText, DollarSign, CreditCard, ChevronRight, X, FileDown,
+  Video, PhoneCall, Sparkles
 } from 'lucide-react';
 import { Appointment, AppointmentStatus, AppointmentPriority } from '../types';
+import { TelehealthVideoModal } from './TelehealthVideoModal';
 
 export const AppointmentsManager: React.FC = () => {
   const {
@@ -18,6 +20,7 @@ export const AppointmentsManager: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [priorityFilter, setPriorityFilter] = useState<string>('All');
   const [showBookModal, setShowBookModal] = useState(false);
+  const [activeTelehealthApt, setActiveTelehealthApt] = useState<Appointment | null>(null);
 
   // Booking Form State
   const [patientId, setPatientId] = useState(patients[0]?.id || 'pat-1');
@@ -224,7 +227,16 @@ export const AppointmentsManager: React.FC = () => {
                   )}
                 </div>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <button
+                    onClick={() => setActiveTelehealthApt(apt)}
+                    className="px-2.5 py-1 text-[11px] font-bold bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-lg shadow-sm flex items-center gap-1 cursor-pointer"
+                    title="Launch WebRTC Video Consultation"
+                  >
+                    <Video className="w-3.5 h-3.5" />
+                    <span>Video Call</span>
+                  </button>
+
                   <button
                     onClick={() => exportPDFSlip(apt)}
                     className="p-1.5 text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 rounded-lg cursor-pointer"
@@ -318,10 +330,19 @@ export const AppointmentsManager: React.FC = () => {
                       )}
                     </td>
 
-                    <td className="py-3.5 px-4 text-right space-x-1">
+                    <td className="py-3.5 px-4 text-right space-x-1.5">
+                      <button
+                        onClick={() => setActiveTelehealthApt(apt)}
+                        className="px-2.5 py-1 text-[11px] font-bold bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-lg shadow-sm inline-flex items-center gap-1.5 cursor-pointer transition-all"
+                        title="Host Telehealth WebRTC Video Call"
+                      >
+                        <Video className="w-3.5 h-3.5" />
+                        <span>Start Video Call</span>
+                      </button>
+
                       <button
                         onClick={() => exportPDFSlip(apt)}
-                        className="p-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                        className="p-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer inline-flex items-center justify-center align-middle"
                         title="Download PDF Consultation Slip"
                       >
                         <FileText className="w-4 h-4 text-cyan-500" />
@@ -330,7 +351,7 @@ export const AppointmentsManager: React.FC = () => {
                       {apt.status === 'Confirmed' && (
                         <button
                           onClick={() => updateAppointmentStatus(apt.id, 'Completed')}
-                          className="px-2.5 py-1 text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 rounded-lg hover:bg-emerald-100 transition-colors cursor-pointer"
+                          className="px-2.5 py-1 text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 rounded-lg hover:bg-emerald-100 transition-colors cursor-pointer inline-flex items-center align-middle"
                         >
                           Mark Completed
                         </button>
@@ -343,6 +364,14 @@ export const AppointmentsManager: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {/* WebRTC Telehealth Video Consultation Modal */}
+      {activeTelehealthApt && (
+        <TelehealthVideoModal
+          appointment={activeTelehealthApt}
+          onClose={() => setActiveTelehealthApt(null)}
+        />
+      )}
 
       {/* Booking Modal */}
       {showBookModal && (
